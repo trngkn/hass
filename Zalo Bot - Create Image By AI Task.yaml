@@ -67,7 +67,7 @@ actions:
                     {{ zalo_group_ai_create_image.media_source_id |
                     replace('media-source://', '/media/') }}
                   message: Đã {{user_message|lower}}
-                  account_selection: "+ổi số đt zalo bot của bạn""
+                  account_selection: "Đổi số đt zalo bot của bạn"
                   thread_id: "đổi id của bạn"
           - conditions:
               - condition: template
