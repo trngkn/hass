@@ -1,0 +1,157 @@
+alias: Zalo - Create Image Bot Answer Multi Group
+description: ""
+triggers:
+  - trigger: webhook
+    allowed_methods:
+      - POST
+      - PUT
+      - GET
+      - HEAD
+    local_only: false
+    webhook_id: "lấy webhook zalo_bot như của cụ Đen đang dùng"
+conditions:
+  - condition: template
+    value_template: |
+      {{ 'tạo ảnh' in trigger.json.data.content|lower }}
+    enabled: false
+  - condition: template
+    value_template: >-
+      {{ trigger.json.data.content | default('')| lower | regex_search('tạo
+      ảnh|tạo một bức ảnh|tạo bức ảnh')}}
+actions:
+  - variables:
+      user_message: "{{ trigger.json.data.content }}"
+      conversation_id: "{{ trigger.json.data.uidFrom }}"
+  - action: ai_task.generate_image
+    metadata: {}
+    data:
+      task_name: Zalo Group Create Image
+      entity_id: ai_task.gemini_2_5_flash_ai_task
+      instructions: "{{ user_message }}"
+    response_variable: zalo_group_ai_create_image
+  - wait_template: >-
+      {{ zalo_group_ai_create_image.media_source_id is defined and
+      zalo_group_ai_create_image is defined }}
+    continue_on_timeout: true
+    timeout: "00:02:00"
+  - if:
+      - condition: template
+        value_template: "{{ wait.completed }}"
+    then:
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.json.threadId == 'đổi id của bạn' }}"
+            sequence:
+              - action: zalo_bot.send_image
+                metadata: {}
+                data:
+                  type: "1"
+                  ttl: 0
+                  image_path: >-
+                    {{ zalo_group_ai_create_image.media_source_id |
+                    replace('media-source://', '/media/') }}
+                  message: Đã {{user_message|lower}}
+                  thread_id: "đổi id của bạn"
+                  account_selection: "+ổi số đt zalo bot của bạn""
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.json.threadId == 'đổi id của bạn' }}"
+            sequence:
+              - action: zalo_bot.send_image
+                metadata: {}
+                data:
+                  type: "1"
+                  ttl: 0
+                  image_path: >-
+                    {{ zalo_group_ai_create_image.media_source_id |
+                    replace('media-source://', '/media/') }}
+                  message: Đã {{user_message|lower}}
+                  account_selection: "+ổi số đt zalo bot của bạn""
+                  thread_id: "đổi id của bạn"
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.json.threadId == 'đổi id của bạn' }}"
+            sequence:
+              - action: zalo_bot.send_image
+                metadata: {}
+                data:
+                  type: "0"
+                  ttl: 0
+                  image_path: >-
+                    {{ zalo_group_ai_create_image.media_source_id |
+                    replace('media-source://', '/media/') }}
+                  message: Đã {{user_message|lower}}
+                  account_selection: "+ổi số đt zalo bot của bạn""
+                  thread_id: "đổi id của bạn"
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.json.threadId == 'đổi id của bạn' }}"
+            sequence:
+              - action: zalo_bot.send_image
+                metadata: {}
+                data:
+                  type: "1"
+                  ttl: 0
+                  image_path: >-
+                    {{ zalo_group_ai_create_image.media_source_id |
+                    replace('media-source://', '/media/') }}
+                  message: Đã {{user_message|lower}}
+                  account_selection: "+ổi số đt zalo bot của bạn""
+                  thread_id: "đổi id của bạn"
+    else:
+      - variables:
+          ai_error: >
+            🤖💥 AI bị hụt cảm hứng, chưa tạo được ảnh!{{'\n'}}🔁 Hãy thử lại
+            lần nữa nhé.{{'\n'}}🕒 {{ now().strftime('%H:%M:%S %a, %d-%b-%Y') }}
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.json.threadId == 'đổi id của bạn' }}"
+            sequence:
+              - action: zalo_bot.send_message
+                metadata: {}
+                data:
+                  type: "1"
+                  ttl: 0
+                  thread_id: "đổi id của bạn"
+                  account_selection: "+ổi số đt zalo bot của bạn""
+                  message: "{{ ai_error }}"
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.json.threadId == 'đổi id của bạn' }}"
+            sequence:
+              - action: zalo_bot.send_message
+                metadata: {}
+                data:
+                  type: "1"
+                  ttl: 0
+                  account_selection: "+ổi số đt zalo bot của bạn""
+                  message: "{{ ai_error }}"
+                  thread_id: "đổi id của bạn"
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.json.threadId == 'đổi id của bạn' }}"
+            sequence:
+              - action: zalo_bot.send_message
+                metadata: {}
+                data:
+                  type: "0"
+                  ttl: 0
+                  account_selection: "+ổi số đt zalo bot của bạn""
+                  message: "{{ ai_error }}"
+                  thread_id: "đổi id của bạn"
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.json.threadId == 'đổi id của bạn' }}"
+            sequence:
+              - action: zalo_bot.send_message
+                metadata: {}
+                data:
+                  type: "1"
+                  ttl: 0
+                  account_selection: "đổi số đt zalo bot của bạn"
+                  message: "{{ ai_error }}"
+                  thread_id: "đổi id của bạn"
+mode: parallel
+max: 50
