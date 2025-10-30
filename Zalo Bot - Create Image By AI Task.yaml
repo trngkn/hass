@@ -53,7 +53,7 @@ actions:
                     replace('media-source://', '/media/') }}
                   message: Đã {{user_message|lower}}
                   thread_id: "đổi id của bạn"
-                  account_selection: "Đổi số đt zalo bot của bạn""
+                  account_selection: "Đổi số đt zalo bot của bạn"
           - conditions:
               - condition: template
                 value_template: "{{ trigger.json.threadId == 'đổi id của bạn' }}"
@@ -97,7 +97,7 @@ actions:
                     {{ zalo_group_ai_create_image.media_source_id |
                     replace('media-source://', '/media/') }}
                   message: Đã {{user_message|lower}}
-                  account_selection: "+ổi số đt zalo bot của bạn""
+                  account_selection: "+ổi số đt zalo bot của bạn"
                   thread_id: "đổi id của bạn"
     else:
       - variables:
@@ -115,7 +115,7 @@ actions:
                   type: "1"
                   ttl: 0
                   thread_id: "đổi id của bạn"
-                  account_selection: "+ổi số đt zalo bot của bạn""
+                  account_selection: "Đổi số đt zalo bot của bạn"
                   message: "{{ ai_error }}"
           - conditions:
               - condition: template
@@ -126,7 +126,7 @@ actions:
                 data:
                   type: "1"
                   ttl: 0
-                  account_selection: "+ổi số đt zalo bot của bạn""
+                  account_selection: "Đổi số đt zalo bot của bạn"
                   message: "{{ ai_error }}"
                   thread_id: "đổi id của bạn"
           - conditions:
@@ -138,7 +138,7 @@ actions:
                 data:
                   type: "0"
                   ttl: 0
-                  account_selection: "Đổi số đt zalo bot của bạn""
+                  account_selection: "Đổi số đt zalo bot của bạn"
                   message: "{{ ai_error }}"
                   thread_id: "đổi id của bạn"
           - conditions:
